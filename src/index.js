@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const xss = require("xss-clean");
 const helmet = require("helmet");
 const compression = require("compression");
+var cors = require("cors");
 
 require("dotenv").config();
 const routes = require("./routes");
@@ -11,7 +12,7 @@ const cache = require("./utility/routeCache");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const API_SERVICE_URL = process.env.API_CRYPTO_URL;
 const API_SERVICE_KEY = process.env.API_KEY;
-
+const CORS = process.env.CORS_URL;
 // Create Express Server
 const app = express();
 
@@ -30,8 +31,15 @@ app.use(helmet());
 // sanitize request data
 app.use(xss());
 
+//setting CROS
+var corsOptions = {
+  origin: CORS,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
 app.use(
   "/getcoins",
+  cors(corsOptions),
   createProxyMiddleware({
     target: API_SERVICE_URL,
     changeOrigin: true,

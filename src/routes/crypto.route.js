@@ -10,18 +10,4 @@ router.get("/info", (req, res, next) => {
   res.send("This is a proxy service which proxies to Billing and Account APIs.\n");
 });
 
-router.use(
-  "/json_placeholder",
-  createProxyMiddleware({
-    target: "https://api.coinranking.com/v2",
-    changeOrigin: true,
-    pathRewrite: {
-      [`^/json_placeholder`]: "/coins",
-    },
-  }),
-  (req, res, next) => {
-    res.send("Welcome Home");
-    next();
-  }
-);
 module.exports = router;

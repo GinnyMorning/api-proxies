@@ -2,17 +2,23 @@ const express = require("express");
 const morgan = require("morgan");
 const xss = require("xss-clean");
 const helmet = require("helmet");
+const compression = require("compression");
 
 require("dotenv").config();
 const routes = require("./routes");
+const cache = require("./utility/routeCache");
 
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const API_SERVICE_URL = process.env.API_CRYPTO_URL;
 
 // Create Express Server
 const app = express();
 
 // Configuration
 const PORT = process.env.PORT;
+
+//Compression
+app.use(compression());
 
 // Logging
 app.use(morgan("dev"));
@@ -24,12 +30,13 @@ app.use(helmet());
 app.use(xss());
 
 app.use(
-  "/json_placeholder",
+  "/getcoins",
+  cache(300),
   createProxyMiddleware({
-    target: "https://api.coinranking.com/v2",
+    target: API_SERVICE_URL,
     changeOrigin: true,
     pathRewrite: {
-      [`^/json_placeholder`]: "/coins",
+      [`^/getcoins`]: "/coins",
     },
   })
 );

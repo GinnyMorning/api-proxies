@@ -32,10 +32,9 @@ app.use(xss());
 
 app.use(
   "/getcoins",
-  cache(300),
   createProxyMiddleware({
     target: API_SERVICE_URL,
-    changeOrigin: false,
+    changeOrigin: true,
     pathRewrite: {
       [`^/getcoins`]: "/coins",
     },

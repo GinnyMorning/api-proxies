@@ -35,7 +35,7 @@ app.use(
   cache(300),
   createProxyMiddleware({
     target: API_SERVICE_URL,
-    changeOrigin: true,
+    changeOrigin: false,
     pathRewrite: {
       [`^/getcoins`]: "/coins",
     },

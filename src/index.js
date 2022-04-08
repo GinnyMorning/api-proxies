@@ -10,6 +10,7 @@ const cache = require("./utility/routeCache");
 
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const API_SERVICE_URL = process.env.API_CRYPTO_URL;
+const API_SERVICE_KEY = process.env.API_KEY;
 
 // Create Express Server
 const app = express();
@@ -37,6 +38,9 @@ app.use(
     changeOrigin: true,
     pathRewrite: {
       [`^/getcoins`]: "/coins",
+    },
+    headers: {
+      "x-access-token": API_SERVICE_KEY,
     },
   })
 );

@@ -5,13 +5,18 @@ const helmet = require("helmet");
 const compression = require("compression");
 var cors = require("cors");
 
-require("dotenv").config();
+const path = require("path");
+
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const routes = require("./routes");
 const cache = require("./utility/routeCache");
 
 const { createProxyMiddleware } = require("http-proxy-middleware");
-const API_SERVICE_URL = process.env.API_CRYPTO_URL;
-const API_SERVICE_KEY = process.env.API_KEY;
+const API_CRYPTO_SERVICE_URL = process.env.API_CRYPTO_URL;
+const API_CRYPTO_SERVICE_KEY = process.env.API_CRYPTO_KEY;
+const API_NEWS_SERVICE_URL = process.env.API_NEWS_URL;
+const API_NEWS_SERVICE_KEY = process.env.API_NEWS_KEY;
+
 const CORS = process.env.CORS_URL;
 // Create Express Server
 const app = express();
@@ -41,13 +46,30 @@ app.use(
   "/getcoins",
   cors(corsOptions),
   createProxyMiddleware({
-    target: API_SERVICE_URL,
+    target: API_CRYPTO_SERVICE_URL,
     changeOrigin: true,
     pathRewrite: {
       [`^/getcoins`]: "/coins",
     },
     headers: {
-      "x-access-token": API_SERVICE_KEY,
+      "x-access-token": API_CRYPTO_SERVICE_KEY,
+    },
+  })
+);
+
+app.use(
+  "/getnews",
+  cors(corsOptions),
+  createProxyMiddleware({
+    target: API_NEWS_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: {
+      [`^/getnews`]: "/news",
+    },
+    headers: {
+      "x-bingapis-sdk": "true",
+      "x-rapidapi-host": "bing-news-search1.p.rapidapi.com",
+      "x-rapidapi-key": API_NEWS_SERVICE_KEY,
     },
   })
 );

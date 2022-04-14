@@ -58,6 +58,21 @@ app.use(
 );
 
 app.use(
+  "/getcoin/**",
+  cors(corsOptions),
+  createProxyMiddleware({
+    target: API_CRYPTO_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: {
+      [`^/getcoin`]: "/coin",
+    },
+    headers: {
+      "x-access-token": API_CRYPTO_SERVICE_KEY,
+    },
+  })
+);
+
+app.use(
   "/getnews",
   cors(corsOptions),
   createProxyMiddleware({
